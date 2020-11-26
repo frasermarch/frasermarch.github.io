@@ -14,6 +14,7 @@
   </head>
 
   <body>
+    <script src="/screensaver/OpenSimplexNoise.js"></script>
     <script src="/screensaver/controller.js"></script>
     <script src="/screensaver/screensaver.js"></script>
    
@@ -22,7 +23,14 @@
       <div class="settings-container">
         <p id="settings-button">Settings</p>
         <div id="settings" class="not-visable">
-
+          <div class="form-check form-check-inline">
+            <input class="noise-type" type="radio" name="inlineRadioOptions" id="perlin" value="perlin" checked>
+            <label class="noise-type-label" for="perlin">Perlin</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="noise-type" type="radio" name="inlineRadioOptions" id="simplex" value="simplex" >
+            <label class="noise-type-label" for="simplex">Simplex</label>
+          </div>
           <label for="max-length">Max length</label>
           <input type="number" name="max-length" id="max-length">
 

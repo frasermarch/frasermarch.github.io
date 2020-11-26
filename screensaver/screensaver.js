@@ -12,7 +12,7 @@ var lengthMax = 8;
 var lenPercentage = 0.8;
 var scl = 20;
 var cols, rows;
-var noise;
+var simplexNoise;
 var alphaMin = 100;
 var alphaMax = 255;
 var cp1, cp2, cp3;
@@ -27,7 +27,8 @@ var input_maxLength,
   input_scl,
   input_alphaMin,
   input_alphaMax,
-  input_sigLim;
+  input_sigLim,
+  input_noiseType;
 
 var colourOptions = [
   {
@@ -47,16 +48,25 @@ var colourOptions = [
   },
 ];
 
+var noiseType = "perlin";
+
 function setup() {
   var canv = createCanvas(windowWidth, windowHeight);
   canv.parent("canvas-container");
   cols = ceil(width / scl) + 1;
   rows = ceil(height / scl) + 1;
   frameRate(fr);
+
+  simplexNoise = new OpenSimplexNoise(Date.now());
+
   cp1 = color(colourOptions[colourOption].cp1);
   cp2 = color(colourOptions[colourOption].cp2);
   cp3 = color(colourOptions[colourOption].cp3);
 
+  input_noiseType = $(".noise-type");
+  input_noiseType.on("change", function (e) {
+    noiseType = $(".noise-type:checked").val();
+  });
   input_maxLength = $("#max-length");
   input_maxLength.val(lengthMax);
   input_maxLength.on("change paste keyup", updateLength);
@@ -122,14 +132,19 @@ function draw() {
     var xoff = 0;
     for (var x = 0; x < cols; x++) {
       var index = x + y * width;
-      var angle = noise(xoff, yoff, zoff) * TWO_PI * 2;
-      var amp = map(
-        noise(xoff, yoff, zoff),
-        0,
-        1,
-        -sigmoidLimits,
-        sigmoidLimits
-      );
+      if (noiseType == "simplex") {
+        var angle = simplexNoise.noise3D(xoff, yoff, zoff) * TWO_PI * 2;
+        var amp = simplexNoise.noise3D(xoff, yoff, zoff);
+      } else if (noiseType == "perlin") {
+        var angle = noise(xoff, yoff, zoff) * TWO_PI * 2;
+        var amp = map(
+          noise(xoff, yoff, zoff),
+          0,
+          1,
+          -sigmoidLimits,
+          sigmoidLimits
+        );
+      }
 
       var sigAmp = sig(amp);
       var sigAmpLen = sigAmp * lengthMax;
@@ -160,6 +175,11 @@ function draw() {
     zoff += zinc;
     ampOff += ampInc;
   }
+}
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  cols = ceil(width / scl) + 1;
+  rows = ceil(height / scl) + 1;
 }
 
 function sig(x) {
