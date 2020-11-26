@@ -1,0 +1,45 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+canvas {
+  display: block;
+}
+
+.no-scroll {
+  overflow: hidden;
+}
+
+#canvas-container {
+  position: relative;
+  .settings-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    width: 25px;
+    margin: 1em;
+    p {
+      color: white;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    #settings {
+      width: 10vw;
+      visibility: auto;
+      &.not-visable {
+        visibility: hidden;
+      }
+      label {
+        font-weight: normal;
+        color: white;
+      }
+    }
+  }
+  canvas {
+    position: absolute;
+  }
+}

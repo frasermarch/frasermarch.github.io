@@ -1,0 +1,24 @@
+{
+  "name": "frasermarch.github.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scss": "node-sass -w scss -o css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frasermarch/frasermarch.github.io.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/frasermarch/frasermarch.github.io/issues"
+  },
+  "homepage": "https://github.com/frasermarch/frasermarch.github.io#readme",
+  "dependencies": {
+    "bootstrap": "^4.5.3",
+    "node-sass": "^5.0.0"
+  }
+}
