@@ -1,4 +1,4 @@
-var fr = null;
+var fr = 40;
 
 var inc = 0.03;
 // angle increment
@@ -9,27 +9,41 @@ var ampOff = 0;
 var ampInc = 0.04;
 
 var lengthMax = 8;
-var lenPercentage = 0.66;
-var scl = 30;
+var lenPercentage = 0.8;
+var scl = 20;
 var cols, rows;
 var noise;
-
+var alphaMin = 100;
+var alphaMax = 255;
 var cp1, cp2, cp3;
-colourOption = 0;
-
+var colourOption = 0;
+var sigmoidLimits = 5;
 var input_maxLength,
   input_angInc,
   input_lengthInc,
   input_spacialInc,
   inputLen,
   colourButton,
-  input_scl;
+  input_scl,
+  input_alphaMin,
+  input_alphaMax,
+  input_sigLim;
 
 var colourOptions = [
   {
     cp1: "#1a2a6c",
     cp2: "#b21f1f",
     cp3: "#fdbb2d",
+  },
+  {
+    cp1: "#12c2e9",
+    cp2: "#c471ed",
+    cp3: "#f64f59",
+  },
+  {
+    cp1: "#8A2387",
+    cp2: "#E94057",
+    cp3: "#F27121",
   },
 ];
 
@@ -67,6 +81,24 @@ function setup() {
   input_scl.val(scl);
   input_scl.on("change paste keyup", updateScl);
 
+  input_alphaMin = $("#alphaMin");
+  input_alphaMin.val(alphaMin);
+  input_alphaMin.on("change paste keyup", function () {
+    alphaMin = parseInt($(this).val());
+  });
+
+  input_alphaMax = $("#alphaMax");
+  input_alphaMax.val(alphaMax);
+  input_alphaMax.on("change paste keyup", function () {
+    alphaMax = parseInt($(this).val());
+  });
+
+  input_sigLim = $("#sigLim");
+  input_sigLim.val(sigmoidLimits);
+  input_sigLim.on("change paste keyup", function () {
+    sigmoidLimits = parseInt($(this).val());
+  });
+
   colourButton = $("#colourButton");
   colourButton.on("click", function (e) {
     console.log(colourOption);
@@ -91,7 +123,13 @@ function draw() {
     for (var x = 0; x < cols; x++) {
       var index = x + y * width;
       var angle = noise(xoff, yoff, zoff) * TWO_PI * 2;
-      var amp = map(noise(xoff, yoff, zoff), 0, 1, -5, 5);
+      var amp = map(
+        noise(xoff, yoff, zoff),
+        0,
+        1,
+        -sigmoidLimits,
+        sigmoidLimits
+      );
 
       var sigAmp = sig(amp);
       var sigAmpLen = sigAmp * lengthMax;
@@ -103,7 +141,7 @@ function draw() {
       } else {
         var colour = lerpColor(cp2, cp3, map(amp, 0.5, 1, 0, 1));
       }
-      let alpha = map(sigAmpLen, 0, lengthMax, -50, 255);
+      let alpha = map(sigAmpLen, 0, lengthMax, alphaMin, alphaMax);
       colour.setAlpha(alpha);
 
       stroke(colour);

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="libraries/p5.min.js"></script>
     <script src="libraries/p5.sound.min.js"></script>
   </head>
@@ -39,8 +40,18 @@
 
           <label for="scl">Grid size</label>
           <input type="range" class="scl" id="scl" min="5" max="50" value="30" step="1">
+
+          <label for="alphaMin">Alpha Min</label>
+          <input type="number" step="1" name="alphaMin" id="alphaMin">
+
+          <label for="alphaMax">Alpha Max</label>
+          <input type="number" step="1" name="alphaMax" id="alphaMax">
           
+          <label for="sigLim">Sigmoid Limit</label>
+          <input type="range" class="sigLim" id="sigLim" min="0" max="10" value="5" step="0.5">
+
           <button type="button" id="colourButton" class="btn btn-primary" style="margin-top: 1em;">Cycle colours</button>
+
         </div>
       </div>
     </div>
