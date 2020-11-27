@@ -28,7 +28,8 @@ var input_maxLength,
   input_alphaMin,
   input_alphaMax,
   input_sigLim,
-  input_noiseType;
+  input_noiseType,
+  input_meshOn;
 
 var colourOptions = [
   {
@@ -49,14 +50,21 @@ var colourOptions = [
 ];
 
 var noiseType = "perlin";
+var meshOn = "";
 
+var mesh = [];
 function setup() {
   var canv = createCanvas(windowWidth, windowHeight);
   canv.parent("canvas-container");
   cols = ceil(width / scl) + 1;
   rows = ceil(height / scl) + 1;
   frameRate(fr);
-
+  for (var x = 0; x < cols; x++) {
+    mesh[x] = [];
+    for (var y = 0; y < rows; y++) {
+      mesh[x][y] = 0; //specify a default value for now
+    }
+  }
   simplexNoise = new OpenSimplexNoise(Date.now());
 
   cp1 = color(colourOptions[colourOption].cp1);
@@ -67,6 +75,13 @@ function setup() {
   input_noiseType.on("change", function (e) {
     noiseType = $(".noise-type:checked").val();
   });
+
+  input_meshOn = $("#mesh-on");
+  input_meshOn.on("change", function (e) {
+    console.log($("#mesh-on:checked").val());
+    meshOn = $("#mesh-on:checked").val();
+  });
+
   input_maxLength = $("#max-length");
   input_maxLength.val(lengthMax);
   input_maxLength.on("change paste keyup", updateLength);
@@ -162,11 +177,64 @@ function draw() {
       stroke(colour);
 
       push();
-      translate(x * scl, y * scl);
-      rotate(v.heading());
-      strokeWeight(sigAmpLen);
-      // (2 * len) / 3
-      line(lenPercentage * len, 0, len, 0);
+      if (meshOn != "on") {
+        translate(x * scl, y * scl);
+        rotate(v.heading());
+        strokeWeight(sigAmpLen);
+        // (2 * len) / 3
+        line(lenPercentage * len, 0, len, 0);
+      } else {
+        v.setMag(len);
+        let xbase = x * scl;
+        let ybase = y * scl;
+        let xPos = xbase + v.x;
+        let yPos = ybase + v.y;
+        mesh[x][y] = [xPos, yPos];
+        strokeWeight(3);
+        if (y == 0 || y == rows) {
+          // LEFT OR RIGHT
+          if (x != 0 && x != cols) {
+            // NOT AT THE ENDS
+            line(
+              mesh[x][y][0],
+              mesh[x][y][1],
+              mesh[x - 1][y][0],
+              mesh[x - 1][y][1]
+            );
+          }
+        } else if (x == 0 || x == cols) {
+          // TOP OR BOTTOM
+          if (y != 0 && y != cols) {
+            line(
+              mesh[x][y][0],
+              mesh[x][y][1],
+              mesh[x][y - 1][0],
+              mesh[x][y - 1][1]
+            );
+          }
+        } else {
+          // MIDDLE
+          line(
+            mesh[x][y][0],
+            mesh[x][y][1],
+            mesh[x][y - 1][0],
+            mesh[x][y - 1][1]
+          );
+          line(
+            mesh[x][y][0],
+            mesh[x][y][1],
+            mesh[x - 1][y][0],
+            mesh[x - 1][y][1]
+          );
+          line(
+            mesh[x][y][0],
+            mesh[x][y][1],
+            mesh[x - 1][y - 1][0],
+            mesh[x - 1][y - 1][1]
+          );
+        }
+      }
+
       pop();
 
       xoff += inc;
@@ -180,6 +248,13 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   cols = ceil(width / scl) + 1;
   rows = ceil(height / scl) + 1;
+
+  for (var x = 0; x < cols; x++) {
+    mesh[x] = [];
+    for (var y = 0; y < rows; y++) {
+      mesh[x][y] = 0; //specify a default value for now
+    }
+  }
 }
 
 function sig(x) {
@@ -205,4 +280,10 @@ function updateScl() {
   scl = input_scl.val();
   cols = ceil(width / scl) + 1;
   rows = ceil(height / scl) + 1;
+  for (var x = 0; x < cols; x++) {
+    mesh[x] = [];
+    for (var y = 0; y < rows; y++) {
+      mesh[x][y] = 0; //specify a default value for now
+    }
+  }
 }
