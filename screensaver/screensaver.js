@@ -149,7 +149,13 @@ function draw() {
       var index = x + y * width;
       if (noiseType == "simplex") {
         var angle = simplexNoise.noise3D(xoff, yoff, zoff) * TWO_PI * 2;
-        var amp = simplexNoise.noise3D(xoff, yoff, zoff);
+        var amp = map(
+          simplexNoise.noise3D(xoff, yoff, zoff),
+          0,
+          1,
+          -sigmoidLimits,
+          sigmoidLimits
+        );
       } else if (noiseType == "perlin") {
         var angle = noise(xoff, yoff, zoff) * TWO_PI * 2;
         var amp = map(
@@ -175,13 +181,11 @@ function draw() {
       colour.setAlpha(alpha);
 
       stroke(colour);
-
       push();
       if (meshOn != "on") {
         translate(x * scl, y * scl);
         rotate(v.heading());
         strokeWeight(sigAmpLen);
-        // (2 * len) / 3
         line(lenPercentage * len, 0, len, 0);
       } else {
         v.setMag(len);
@@ -190,7 +194,7 @@ function draw() {
         let xPos = xbase + v.x;
         let yPos = ybase + v.y;
         mesh[x][y] = [xPos, yPos];
-        strokeWeight(3);
+        strokeWeight(2);
         if (y == 0 || y == rows) {
           // LEFT OR RIGHT
           if (x != 0 && x != cols) {
@@ -234,10 +238,11 @@ function draw() {
           );
         }
       }
-
       pop();
-
       xoff += inc;
+    }
+    if (mesh == "on") {
+      endShape();
     }
     yoff += inc;
     zoff += zinc;
