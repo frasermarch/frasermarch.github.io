@@ -82,7 +82,7 @@ function draw() {
   stroke(255, 255, 255);
   noFill();
   strokeWeight(1.5);
-  translate(-w / 2, -h / 2);
+  translate(-w / 2, -h / 1.8);
   for (var x = 0; x < cols - 1; x++) {
     beginShape(LINES);
     for (var y = 0; y < rows; y++) {
