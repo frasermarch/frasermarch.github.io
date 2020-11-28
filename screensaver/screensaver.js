@@ -149,13 +149,7 @@ function draw() {
       var index = x + y * width;
       if (noiseType == "simplex") {
         var angle = simplexNoise.noise3D(xoff, yoff, zoff) * TWO_PI * 2;
-        var amp = map(
-          simplexNoise.noise3D(xoff, yoff, zoff),
-          0,
-          1,
-          -sigmoidLimits,
-          sigmoidLimits
-        );
+        var amp = simplexNoise.noise3D(xoff, yoff, zoff);
       } else if (noiseType == "perlin") {
         var angle = noise(xoff, yoff, zoff) * TWO_PI * 2;
         var amp = map(
